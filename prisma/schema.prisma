@@ -1,0 +1,44 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Customer {
+  id String @id @default(cuid())
+  name String 
+  IdDetails String
+  mobile String
+  booking Booking?
+}
+
+model Booking {
+  id String @id @default(cuid())
+  roomNo Room[]
+  roomRent Int
+  foodBill Int
+  checkinDate DateTime
+  checkoutDate DateTime
+  foodItems FoodItems[]
+  customer Customer @relation(fields: [custId], references: [id])
+  custId String @unique
+}
+
+model Room {
+  id String @id
+  booking Booking @relation(fields: [bookingId], references: [id])
+  bookingId String @unique
+}
+
+model FoodItems {
+  id String @id @default(cuid())
+  name String
+  price Int
+  quantity Int
+  booking Booking @relation(fields: [bookingId], references: [id])
+  bookingId String @unique
+}
